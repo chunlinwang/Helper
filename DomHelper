@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: chunlin
+ * Date: 24/02/2017
+ * Time: 12:16
+ */
+
+namespace AppBundle\Util;
+
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Finder\SplFileInfo;
+
+class DomHelper
+{
+    /**
+     * @var Crawler $crawler;
+     */
+    private $crawler;
+
+    public function __construct(SplFileInfo $file)
+    {
+        $this->crawler = new Crawler($file->getContents());
+    }
+
+    public static function newInstance(SplFileInfo $file)
+    {
+        return new self($file);
+    }
+
+    public function getNodes($xpath)
+    {
+        return $this->crawler->filterXPath($xpath);
+    }
+}
