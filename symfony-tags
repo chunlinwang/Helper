@@ -1,0 +1,43 @@
+http://symfony.com/doc/current/service_container/tags.html
+http://symfony.com/doc/current/reference/dic_tags.html
+
+Tag Name	Usage
+auto_alias	Define aliases based on the value of container parameters
+console.command	Add a command
+controller.argument_value_resolver	Register a value resolver for controller arguments such as Request
+data_collector	Create a class that collects custom data for the profiler
+doctrine.event_listener	Add a Doctrine event listener
+doctrine.event_subscriber	Add a Doctrine event subscriber
+form.type	Create a custom form field type
+form.type_extension	Create a custom "form extension"
+form.type_guesser	Add your own logic for "form type guessing"
+kernel.cache_clearer	Register your service to be called during the cache clearing process
+kernel.cache_warmer	Register your service to be called during the cache warming process
+kernel.event_listener	Listen to different events/hooks in Symfony
+kernel.event_subscriber	To subscribe to a set of different events/hooks in Symfony
+kernel.fragment_renderer	Add new HTTP content rendering strategies
+monolog.logger	Logging with a custom logging channel
+monolog.processor	Add a custom processor for logging
+routing.loader	Register a custom service that loads routes
+routing.expression_language_provider	Register a provider for expression language functions in routing
+security.expression_language_provider	Register a provider for expression language functions in security
+security.voter	Add a custom voter to Symfony's authorization logic
+security.remember_me_aware	To allow remember me authentication
+serializer.encoder	Register a new encoder in the serializer service
+serializer.normalizer	Register a new normalizer in the serializer service
+swiftmailer.default.plugin	Register a custom SwiftMailer Plugin
+templating.helper	Make your service available in PHP templates
+translation.loader	Register a custom service that loads translations
+translation.extractor	Register a custom service that extracts translation messages from a file
+translation.dumper	Register a custom service that dumps translation messages
+twig.extension	Register a custom Twig Extension
+twig.loader	Register a custom service that loads Twig templates
+validator.constraint_validator	Create your own custom validation constraint
+validator.initializer	Register a service that initializes objects before validation
+
+services:
+    App\Handler\One:
+        tags:
+            - { name: app.handler, priority: 20, alias: name } 
+            
+            
