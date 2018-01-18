@@ -1,0 +1,5 @@
+http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
+
+@OneToMany(targetEntity="Phonenumber", mappedBy="user", cascade={"persist", "remove"}, orphanRemoval=true)
+
+many is owner
