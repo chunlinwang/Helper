@@ -114,7 +114,9 @@ class ObjectVoter extends Voter
             ? $this->objectAttributes[$subjectClass][$attribute] : false;
     }
 }
-
+/*
+In controller, @Security("is_granted('view', equipement) and has_role('ROLE_SUPER_ADMIN')")
+*/
 /* yaml config roles viter
 AppBundle\Entity\Equipement:
     view: ['ROLE_SUPER_ADMIN']
