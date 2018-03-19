@@ -1,0 +1,84 @@
+    /**
+     * Get all equipment in the same depository.
+     *
+     * @param Intervention                   $intervention
+     * @param EquipmentValidationFilterModel $equipmentValidationFilterModel
+     *
+     * @return mixed
+     */
+    public function findEquipmentsByIntervention(Intervention $intervention, EquipmentValidationFilterModel $equipmentValidationFilterModel)
+    {
+        $depository = $intervention->getEquipement() ? $intervention->getEquipement()->getDepository() : null;
+
+        $query = new Query();
+        $boolQuery = new BoolQuery();
+        $nestedQuery = new Nested();
+        $termDelete = new Term();
+        $termActivated = new Term();
+
+        $termDelete->setTerm('deleted', false);
+        $termActivated->setTerm('activated', true);
+        $nestedQuery->setPath('depository')
+            ->setQuery(new Match('depository.id', $depository->getId()));
+
+        $boolQuery->addMust($nestedQuery);
+        $boolQuery->addMust($termDelete);
+        $boolQuery->addMust($termActivated);
+
+        $query->setQuery($boolQuery);
+
+        if ($equipmentValidationFilterModel->getOrderDir() && $equipmentValidationFilterModel->getOrderColumn()) {
+            $query->addSort([$equipmentValidationFilterModel->getOrderColumn().'.raw' => ['order' => $equipmentValidationFilterModel->getOrderDir()]]);
+        }
+
+        if ($equipmentValidationFilterModel->getSerialNumber()) {
+            $querySerialNumber = new Query\MatchPhrasePrefix('serialNumber', $equipmentValidationFilterModel->getSerialNumber());
+            $boolQuery->addMust($querySerialNumber);
+        }
+
+        if ($equipmentValidationFilterModel->getInternalNumber()) {
+            $queryInternalNumber = new Query\MatchPhrasePrefix('internalNumber', $equipmentValidationFilterModel->getSerialNumber());
+            $boolQuery->addMust($queryInternalNumber);
+        }
+
+        if ($equipmentValidationFilterModel->getEquipementType()) {
+            $queryEquipmentType = new Nested();
+            $queryEquipmentType->setPath('equipementType')
+                ->setQuery(new Query\MatchPhrasePrefix('equipementType.code', $equipmentValidationFilterModel->getEquipementType()));
+            $boolQuery->addMust($queryEquipmentType);
+        }
+
+        return $this->find($query, self::MAX);
+    }
+    
+    /*
+                    equipement:
+                    properties:
+                        id: { type: integer }
+                        serialNumber: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                        internalNumber: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                        type: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                        brand: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                        activated: { type: boolean }
+                        deactivatedAt: { type: date }
+                        deleted: { type: boolean }
+                        deletedAt: { type: date }
+                        equipementType:
+                            type: "nested"
+                            properties:
+                                id: { type: integer }
+                                code: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                                name: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                        depository:
+                            type: "nested"
+                            properties:
+                                id: { type: integer }
+                                name: { type: text, analyzer: ignore_accent, fields: { raw: { type: keyword, index: true } } }
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Equipement
+                        provider: ~
+                        finder: ~
+                        listener: ~
+                        repository: AppBundle\SearchRepository\EquipementRepository
+    */
