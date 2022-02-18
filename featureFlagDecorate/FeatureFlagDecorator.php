@@ -15,9 +15,6 @@ final class FeatureFlagDecorator
         $this->featureFlagClassifier = $featureFlagClassifier;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     public function __call($name, $arguments)
     {
         // If we don't use feature flag, we will use the origin method of the origin class.
