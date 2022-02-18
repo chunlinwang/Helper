@@ -1,0 +1,4 @@
+# this configuration to define which feature flag will be used or not.
+parameters:
+    feature_flags:
+        migration_promocode: true
