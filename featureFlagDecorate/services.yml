@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        
+    _instanceof:
+        App\FeatureFlag\FeatureFlagDecorateInterface:
+            tags:
+                - !php/const App\DependencyInjection\Compiler\FeatureFlagCompilerPass::FEATURE_FLAG_DECORATED_TAG
